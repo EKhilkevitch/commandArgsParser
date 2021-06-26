@@ -7,6 +7,7 @@ if ( ENABLE_TESTS )
 
   set ( tests_source_files
           gtest_parser.cpp
+          gtest_parsercpp.cpp
       )
 
   if ( UNIX )
@@ -21,7 +22,7 @@ if ( ENABLE_TESTS )
     add_executable( selfTest-commandArgsParser ${tests_source_files} )
     target_link_libraries( selfTest-commandArgsParser ${gtest} )
     target_link_libraries( selfTest-commandArgsParser ${gtest_main} )
-    target_link_libraries( selfTest-commandArgsParser commandArgsParser )
+    target_link_libraries( selfTest-commandArgsParser commandArgsParser commandArgsParserCpp )
     target_link_libraries( selfTest-commandArgsParser pthread )
     target_include_directories( selfTest-commandArgsParser PRIVATE "${PROJECT_SOURCE_DIR}/../" )
   else()

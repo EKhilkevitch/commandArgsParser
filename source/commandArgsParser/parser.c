@@ -50,6 +50,38 @@ void commandArgsParserDelete( struct commandArgsParser *Parser )
 
 /* --------------------------------------------------------- */
 
+struct commandArgsParser* commandArgsParserCopy( const struct commandArgsParser *Parser )
+{
+  struct commandArgsParser *Copy;
+  
+  struct option *CurrentOption = NULL, *CopyOption = NULL, **EndOfCopuOptionList = NULL;
+
+  if ( Parser == NULL )
+    return NULL;
+
+  Copy = commandArgsParserCreate();
+  if ( Copy == NULL )
+    return NULL;
+
+  CurrentOption = Parser->OptionsList;
+  EndOfCopuOptionList = &Copy->OptionsList;
+  while ( CurrentOption != NULL )
+  {
+    CopyOption = CAPINT_copyOption(CurrentOption);
+    if ( CopyOption == NULL )
+      break;
+
+    *EndOfCopuOptionList = CopyOption;
+    EndOfCopuOptionList = &CopyOption->Next;
+
+    CurrentOption = CurrentOption->Next;
+  }
+
+  return Copy;
+}
+
+/* --------------------------------------------------------- */
+
 void commandArgsParserAddOption( struct commandArgsParser *Parser, char Short, const char *Long, int HasArgument )
 {
   struct option *Option;
@@ -117,7 +149,7 @@ struct commandArgsParsedMap* commandArgsParserParse( const struct commandArgsPar
   if ( argv[0] == NULL )
     return Map;
 
-  Map->ProgramName = CAPINT_strcopy( argv[0] );
+  Map->ProgramName = CAPINT_strdup( argv[0] );
   if ( Map->ProgramName == NULL )
     return Map;
 
@@ -130,7 +162,8 @@ struct commandArgsParsedMap* commandArgsParserParse( const struct commandArgsPar
     argv += Shift;
   }
 
-  CAPINT_updateMapFileVectorFromList(Map);
+  CAPINT_updateMapFileVectorFromList( Map );
+  CAPINT_updateMapErrorString( Map, Parser );
 
   if ( 0 )
     CAPINT_debugPrintMap(Map);
@@ -154,7 +187,8 @@ struct commandArgsParsedMap* commandArgsParsedMapCopy( const struct commandArgsP
   if ( Copy == NULL )
     return NULL;
 
-  Copy->ProgramName = CAPINT_strcopy( Map->ProgramName );
+  Copy->ProgramName = CAPINT_strdup( Map->ProgramName );
+  Copy->ErrorString = CAPINT_strdup( Map->ErrorString );
 
   CurrentOption = Map->OptionsList;
   EndOfCopuOptionList = &Copy->OptionsList;
@@ -209,6 +243,7 @@ void commandArgsParsedMapDelete( struct commandArgsParsedMap *Map )
   
   free( Map->ProgramName );
   free( Map->FileListVector );
+  free( Map->ErrorString );
 
   memset( Map, 0, sizeof(*Map) );
   free(Map);
@@ -235,6 +270,16 @@ int commandArgsParsedMapIsSuccess( const struct commandArgsParsedMap *Map )
   }
 
   return 1;
+}
+
+/* --------------------------------------------------------- */
+
+const char* commandArgsParsedMapErrorString( const struct commandArgsParsedMap *Map )
+{
+  if ( Map->ErrorString == NULL || Map->ErrorString[0] == '\0' )
+    return NULL;
+
+  return Map->ErrorString;
 }
 
 /* --------------------------------------------------------- */

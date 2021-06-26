@@ -21,6 +21,7 @@ extern const char* const COMMAND_ARGS_PARSER_MAP_ERROR;
 
 struct commandArgsParser* commandArgsParserCreate( void );
 void commandArgsParserDelete( struct commandArgsParser *Parser );
+struct commandArgsParser* commandArgsParserCopy( const struct commandArgsParser *Parser );
 
 void commandArgsParserAddOption( struct commandArgsParser *Parser, char Short, const char *Long, int HasArgument );
 int commandArgsParserIsShortOptionExists( const struct commandArgsParser *Parser, char Short );
@@ -30,6 +31,7 @@ struct commandArgsParsedMap* commandArgsParserParse( const struct commandArgsPar
 struct commandArgsParsedMap* commandArgsParsedMapCopy( const struct commandArgsParsedMap *Map );
 void commandArgsParsedMapDelete( struct commandArgsParsedMap *Map );
 int commandArgsParsedMapIsSuccess( const struct commandArgsParsedMap *Map );
+const char* commandArgsParsedMapErrorString( const struct commandArgsParsedMap *Map );
 const char* commandArgsParsedMapProgramName( const struct commandArgsParsedMap *Map );
 const char* commandArgsParsedMapShortOptionValue( const struct commandArgsParsedMap *Map, char Short );
 const char* commandArgsParsedMapLongOptionValue( const struct commandArgsParsedMap *Map, const char *Long );
@@ -41,5 +43,9 @@ char** commandArgsParsedMapFiles( const struct commandArgsParsedMap *Map );
 }
 #endif
 
+#endif
+
+#ifdef __cplusplus
+#  include "commandArgsParser/parser_cpp.h"
 #endif
 

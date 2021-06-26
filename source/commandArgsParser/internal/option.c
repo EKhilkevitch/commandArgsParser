@@ -57,7 +57,7 @@ struct option* CAPINT_createOption( char Short, const char *Long, const char *Ar
   {
     Option->Argument = (char*)Argument;
   } else {
-    Option->Argument = CAPINT_strcopy( Argument );
+    Option->Argument = CAPINT_strdup( Argument );
     if ( Option->Argument == NULL )
     {
       CAPINT_freeOption( Option );
@@ -69,7 +69,7 @@ struct option* CAPINT_createOption( char Short, const char *Long, const char *Ar
   {
     Option->Long = COMMAND_ARGS_PARSER_NO_LONG;
   } else {
-    Option->Long = CAPINT_strcopy( Long );
+    Option->Long = CAPINT_strdup( Long );
     if ( Option->Long == NULL )
     {
       CAPINT_freeOption( Option );

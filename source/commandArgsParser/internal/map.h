@@ -6,6 +6,7 @@
 
 struct option;
 struct fileitem;
+struct commandArgsParser;
 
 struct commandArgsParsedMap
 {
@@ -13,6 +14,7 @@ struct commandArgsParsedMap
   struct option *OptionsList;
   struct fileitem *FileList;
   char **FileListVector;
+  char *ErrorString;
 };
 
 /* ========================================================= */
@@ -23,6 +25,7 @@ void CAPINT_appendOptionErrorShortToMap( struct commandArgsParsedMap *Map, char 
 void CAPINT_appendOptionErrorLongToMap( struct commandArgsParsedMap *Map, const char *Long );
 void CAPINT_appendFileItemToMap( struct commandArgsParsedMap *Map, const char *FileName );
 void CAPINT_updateMapFileVectorFromList( struct commandArgsParsedMap *Map );
+void CAPINT_updateMapErrorString( struct commandArgsParsedMap *Map, const struct commandArgsParser *Parser );
 
 void CAPINT_debugPrintMap( const struct commandArgsParsedMap *Map );
 

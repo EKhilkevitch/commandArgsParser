@@ -2,6 +2,7 @@
 /* ========================================================= */
 
 #include "commandArgsParser/internal/map.h"
+#include "commandArgsParser/internal/strcopy.h"
 #include "commandArgsParser/internal/fileitem.h"
 #include "commandArgsParser/internal/option.h"
 #include "commandArgsParser/parser.h"
@@ -24,6 +25,7 @@ struct commandArgsParsedMap* CAPINT_createMap( void )
   Map->OptionsList = NULL;
   Map->FileList = NULL;
   Map->FileListVector = NULL;
+  Map->ErrorString = NULL;
 
   return Map;
 }
@@ -72,6 +74,8 @@ void CAPINT_debugPrintMap( const struct commandArgsParsedMap *Map )
     fprintf( stderr, "File: %s\n", CurrentFile->Value );
     CurrentFile = CurrentFile->Next;
   }
+  
+  fprintf( stderr, "Map->ErrorString: %s\n", Map->ErrorString == NULL ? "(NULL)" : Map->ErrorString );
 }
 
 /* --------------------------------------------------------- */
@@ -159,11 +163,9 @@ void CAPINT_updateMapFileVectorFromList( struct commandArgsParsedMap *Map )
   }
 
   free( Map->FileListVector );
+  Map->FileListVector = NULL;
   if ( CountOfFiles == 0 )
-  {
-    Map->FileListVector = NULL;
     return;
-  }
 
   Map->FileListVector = malloc( (CountOfFiles+1) * sizeof(const char*) );
   if ( Map->FileListVector == NULL )
@@ -179,6 +181,74 @@ void CAPINT_updateMapFileVectorFromList( struct commandArgsParsedMap *Map )
     Current = Current->Next;
     i--;
   }
+}
+
+/* --------------------------------------------------------- */
+
+void CAPINT_updateMapErrorString( struct commandArgsParsedMap *Map, const struct commandArgsParser *Parser )
+{
+  struct option *Option;
+  char *BufferEnd = NULL;
+  char ShortOptionString[2] = { 0 };
+  const size_t ErrorStringSize = 512;
+
+  if ( Map == NULL )
+    return;
+
+  free( Map->ErrorString );
+  Map->ErrorString = NULL;
+
+  Option = Map->OptionsList;
+  while ( Option != NULL )
+  {
+    if ( Option->Argument == COMMAND_ARGS_PARSER_MAP_ERROR )
+      break;
+    Option = Option->Next;
+  }
+
+  if ( Option == NULL )
+    return;
+    
+  Map->ErrorString = malloc( ErrorStringSize );
+  if ( Map->ErrorString == NULL )
+    return;
+
+  if ( commandArgsParserIsLongOptionExists(Parser,Option->Long) )
+  {
+    BufferEnd = Map->ErrorString;
+    BufferEnd = CAPINT_stpncpy( BufferEnd, "Argument for option '", ErrorStringSize - ( BufferEnd - Map->ErrorString ) );
+    BufferEnd = CAPINT_stpncpy( BufferEnd, Option->Long, ErrorStringSize - ( BufferEnd - Map->ErrorString ) );
+    BufferEnd = CAPINT_stpncpy( BufferEnd, "' not found", ErrorStringSize - ( BufferEnd - Map->ErrorString ) );
+    return;
+  }
+  
+  if ( commandArgsParserIsShortOptionExists(Parser,Option->Short) )
+  {
+    ShortOptionString[0] = Option->Short;
+
+    BufferEnd = Map->ErrorString;
+    BufferEnd = CAPINT_stpncpy( BufferEnd, "Argument for option '", ErrorStringSize - ( BufferEnd - Map->ErrorString ) );
+    BufferEnd = CAPINT_stpncpy( BufferEnd, ShortOptionString, ErrorStringSize - ( BufferEnd - Map->ErrorString ) );
+    BufferEnd = CAPINT_stpncpy( BufferEnd, "' not found", ErrorStringSize - ( BufferEnd - Map->ErrorString ) );
+    return;
+  }
+
+  {
+    ShortOptionString[0] = Option->Short;
+
+    BufferEnd = Map->ErrorString;
+    BufferEnd = CAPINT_stpncpy( BufferEnd, "Unexpected argument '", ErrorStringSize - ( BufferEnd - Map->ErrorString ) );
+    if ( Option->Long != COMMAND_ARGS_PARSER_NO_LONG )
+      BufferEnd = CAPINT_stpncpy( BufferEnd, Option->Long, ErrorStringSize - ( BufferEnd - Map->ErrorString ) );
+    else if ( Option->Short != COMMAND_ARGS_PARSER_NO_SHORT ) 
+      BufferEnd = CAPINT_stpncpy( BufferEnd, ShortOptionString, ErrorStringSize - ( BufferEnd - Map->ErrorString ) );
+    else
+      BufferEnd = CAPINT_stpncpy( BufferEnd, "???", ErrorStringSize - ( BufferEnd - Map->ErrorString ) );
+    BufferEnd = CAPINT_stpncpy( BufferEnd, "' found", ErrorStringSize - ( BufferEnd - Map->ErrorString ) );
+    return;
+
+  }
+
 }
 
 /* ========================================================= */

@@ -35,7 +35,7 @@ struct fileitem* CAPINT_createFile( const char *Name )
   if ( File == NULL )
     return NULL;
 
-  File->Value = CAPINT_strcopy( Name );
+  File->Value = CAPINT_strdup( Name );
   if ( File->Value == NULL )
   {
     free(File);
