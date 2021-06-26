@@ -2,6 +2,12 @@
 project( commandArgsParser ) 
 
 set( source_files 
+       internal/strcopy.c
+       internal/optiontype.c
+       internal/option.c
+       internal/fileitem.c
+       internal/map.c
+       internal/parser.c
        parser.c
    )
 
