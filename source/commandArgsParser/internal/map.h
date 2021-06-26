@@ -17,6 +17,7 @@ struct commandArgsParsedMap
 
 /* ========================================================= */
 
+struct commandArgsParsedMap* CAPINT_createMap( void );
 void CAPINT_appendOptionWithArgumentToMap( struct commandArgsParsedMap *Map, const struct option *ParserOption, const char *Argument );
 void CAPINT_appendOptionErrorShortToMap( struct commandArgsParsedMap *Map, char Short );
 void CAPINT_appendOptionErrorLongToMap( struct commandArgsParsedMap *Map, const char *Long );

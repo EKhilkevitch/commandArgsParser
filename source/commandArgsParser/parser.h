@@ -27,6 +27,7 @@ int commandArgsParserIsShortOptionExists( const struct commandArgsParser *Parser
 int commandArgsParserIsLongOptionExists( const struct commandArgsParser *Parser, const char *Long );
 
 struct commandArgsParsedMap* commandArgsParserParse( const struct commandArgsParser *Parser, char **argv );
+struct commandArgsParsedMap* commandArgsParsedMapCopy( const struct commandArgsParsedMap *Map );
 void commandArgsParsedMapDelete( struct commandArgsParsedMap *Map );
 int commandArgsParsedMapIsSuccess( const struct commandArgsParsedMap *Map );
 const char* commandArgsParsedMapProgramName( const struct commandArgsParsedMap *Map );

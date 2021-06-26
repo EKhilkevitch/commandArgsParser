@@ -12,6 +12,24 @@
 
 /* ========================================================= */
 
+struct commandArgsParsedMap* CAPINT_createMap( void )
+{
+  struct commandArgsParsedMap *Map;
+  
+  Map = malloc( sizeof(*Map) );
+  if ( Map == NULL )
+    return NULL;
+
+  Map->ProgramName = NULL;
+  Map->OptionsList = NULL;
+  Map->FileList = NULL;
+  Map->FileListVector = NULL;
+
+  return Map;
+}
+
+/* --------------------------------------------------------- */
+
 void CAPINT_debugPrintMap( const struct commandArgsParsedMap *Map )
 {
   const struct option *CurrentOption;

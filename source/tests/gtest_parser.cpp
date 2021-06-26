@@ -547,7 +547,6 @@ TEST( parser, parse_options_files )
   ASSERT_STREQ( nullptr, FileList[3] );
 }
 
-
 // ---------------------------------------------------------
 
 TEST( parser, parse_options_files_end )
@@ -576,6 +575,37 @@ TEST( parser, parse_options_files_end )
   ASSERT_STREQ( "--optC", FileList[1] );
   ASSERT_STREQ( "file2",  FileList[2] );
   ASSERT_STREQ( nullptr,  FileList[3] );
+}
+
+// ---------------------------------------------------------
+
+TEST( parser, parse_copy )
+{
+  std::unique_ptr< char*[], decltype(&freeArgv) > Argv( createArgv( "program", "file1", "-a", "argA", "--optC", "file2", "file3", nullptr ), &freeArgv );
+  std::unique_ptr< commandArgsParser, decltype(&commandArgsParserDelete) > Parser( commandArgsParserCreate(), &commandArgsParserDelete );
+
+  commandArgsParserAddOption( Parser.get(), 'a', "optA", 1 );
+  commandArgsParserAddOption( Parser.get(), 'b', "optB", 0 );
+  commandArgsParserAddOption( Parser.get(), 'c', "optC", 0 );
+  commandArgsParserAddOption( Parser.get(), 'd', "optD", 0 );
+
+  std::unique_ptr< commandArgsParsedMap, decltype(&commandArgsParsedMapDelete) > Map( commandArgsParserParse(Parser.get(),Argv.get()), &commandArgsParsedMapDelete );
+  std::unique_ptr< commandArgsParsedMap, decltype(&commandArgsParsedMapDelete) > Copy( commandArgsParsedMapCopy(Map.get()), &commandArgsParsedMapDelete );
+
+  EXPECT_NE( nullptr, Copy.get() );
+  EXPECT_EQ( 1, commandArgsParsedMapIsSuccess(Copy.get()) );
+  EXPECT_STREQ( "program", commandArgsParsedMapProgramName(Copy.get()) );
+  EXPECT_STREQ( "argA", commandArgsParsedMapShortOptionValue(Copy.get(),'a') );
+  EXPECT_STREQ( nullptr, commandArgsParsedMapShortOptionValue(Copy.get(),'b') );
+  EXPECT_STREQ( COMMAND_ARGS_PARSER_MAP_EXISTS, commandArgsParsedMapShortOptionValue(Copy.get(),'c') );
+  EXPECT_STREQ( nullptr, commandArgsParsedMapShortOptionValue(Copy.get(),'d') );
+
+  auto FileList = commandArgsParsedMapFiles(Copy.get());
+  ASSERT_NE( nullptr, FileList );
+  ASSERT_STREQ( "file1", FileList[0] );
+  ASSERT_STREQ( "file2", FileList[1] );
+  ASSERT_STREQ( "file3", FileList[2] );
+  ASSERT_STREQ( nullptr, FileList[3] );
 }
 
 // =========================================================

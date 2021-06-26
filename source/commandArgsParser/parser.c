@@ -110,13 +110,9 @@ struct commandArgsParsedMap* commandArgsParserParse( const struct commandArgsPar
   if ( argv == NULL )
     return NULL;
 
-  Map = malloc( sizeof(*Map) );
+  Map = CAPINT_createMap();
   if ( Map == NULL )
     return NULL;
-  Map->ProgramName = NULL;
-  Map->OptionsList = NULL;
-  Map->FileList = NULL;
-  Map->FileListVector = NULL;
 
   if ( argv[0] == NULL )
     return Map;
@@ -140,6 +136,57 @@ struct commandArgsParsedMap* commandArgsParserParse( const struct commandArgsPar
     CAPINT_debugPrintMap(Map);
 
   return Map;
+}
+
+/* --------------------------------------------------------- */
+
+struct commandArgsParsedMap* commandArgsParsedMapCopy( const struct commandArgsParsedMap *Map )
+{
+  struct commandArgsParsedMap *Copy;
+  
+  struct option *CurrentOption = NULL, *CopyOption = NULL, **EndOfCopuOptionList = NULL;
+  struct fileitem *CurrentFile = NULL, *CopyFile = NULL, **EndOfCopyFileList = NULL;
+
+  if ( Map == NULL )
+    return NULL;
+
+  Copy = CAPINT_createMap();
+  if ( Copy == NULL )
+    return NULL;
+
+  Copy->ProgramName = CAPINT_strcopy( Map->ProgramName );
+
+  CurrentOption = Map->OptionsList;
+  EndOfCopuOptionList = &Copy->OptionsList;
+  while ( CurrentOption != NULL )
+  {
+    CopyOption = CAPINT_copyOption(CurrentOption);
+    if ( CopyOption == NULL )
+      break;
+
+    *EndOfCopuOptionList = CopyOption;
+    EndOfCopuOptionList = &CopyOption->Next;
+
+    CurrentOption = CurrentOption->Next;
+  }
+
+  CurrentFile = Map->FileList;
+  EndOfCopyFileList = &Copy->FileList;
+  while ( CurrentFile != NULL )
+  {
+    CopyFile = CAPINT_copyFile(CurrentFile);
+    if ( CopyFile == NULL )
+      break;
+
+    *EndOfCopyFileList = CopyFile;
+    EndOfCopyFileList = &CopyFile->Next;
+
+    CurrentFile = CurrentFile->Next;
+  }
+
+
+  CAPINT_updateMapFileVectorFromList( Copy );
+  return Copy;
 }
 
 /* --------------------------------------------------------- */

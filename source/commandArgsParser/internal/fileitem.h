@@ -14,6 +14,7 @@ struct fileitem
 
 struct fileitem* CAPINT_freeFile( struct fileitem *File );
 struct fileitem* CAPINT_createFile( const char *Name );
+struct fileitem* CAPINT_copyFile( const struct fileitem *File );
 
 /* ========================================================= */
 

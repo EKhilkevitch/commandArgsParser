@@ -82,6 +82,16 @@ struct option* CAPINT_createOption( char Short, const char *Long, const char *Ar
 
 /* --------------------------------------------------------- */
 
+struct option* CAPINT_copyOption( const struct option *Option )
+{
+  if ( Option == NULL )
+    return NULL;
+
+  return CAPINT_createOption( Option->Short, Option->Long, Option->Argument );
+}
+
+/* --------------------------------------------------------- */
+
 const struct option* CAPINT_findShortOptionInList( const struct option *Current, char Short )
 {
   if ( Short == COMMAND_ARGS_PARSER_NO_SHORT )

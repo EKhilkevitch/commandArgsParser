@@ -17,6 +17,7 @@ struct option
 
 struct option* CAPINT_freeOption( struct option *Option );
 struct option* CAPINT_createOption( char Short, const char *Long, const char *Argument );
+struct option* CAPINT_copyOption( const struct option *Option );
 
 const struct option* CAPINT_findShortOptionInList( const struct option *Current, char Short );
 const struct option* CAPINT_findLongOptionInList( const struct option *Current, const char *Long );

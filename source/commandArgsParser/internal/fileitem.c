@@ -45,5 +45,15 @@ struct fileitem* CAPINT_createFile( const char *Name )
   return File;
 }
 
+/* --------------------------------------------------------- */
+
+struct fileitem* CAPINT_copyFile( const struct fileitem *File )
+{
+  if ( File == NULL )
+    return NULL;
+
+  return CAPINT_createFile( File->Value );
+}
+
 /* ========================================================= */
 
