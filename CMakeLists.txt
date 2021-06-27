@@ -22,4 +22,5 @@ endif()
 
 add_subdirectory( ./source/commandArgsParser/ )
 add_subdirectory( ./source/tests/ )
+add_subdirectory( ./source/examples/ )
 
