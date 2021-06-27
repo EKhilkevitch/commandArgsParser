@@ -42,7 +42,7 @@ int main( int argc, char **argv )
 
   if ( commandArgsParsedMapShortOptionValue(Map,'h') )
   {
-    fprintf( stderr, "This program justdemonstrate 'commandArgsParser' library usage and nothing mode. Please see source code.\n"
+    fprintf( stderr, "This program justdemonstrate 'commandArgsParser' library usage and nothing more. Please see source code.\n"
                      "Usage: %s [-h|--help]\n"
                      "          [-a|--all] [-r|--regex REGEX] [-t] [--exclude NAME] [--include NAME] FILES...\n",
                              commandArgsParsedMapProgramName(Map) );

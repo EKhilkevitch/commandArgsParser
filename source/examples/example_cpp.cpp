@@ -24,7 +24,7 @@ int main( int argc, char **argv )
 
   if ( Map.exists('h') )
   {
-    std::cerr << "This program justdemonstrate 'commandArgsParser' library usage and nothing mode. Please see source code." << std::endl <<
+    std::cerr << "This program justdemonstrate 'commandArgsParser' library usage and nothing more. Please see source code." << std::endl <<
                  "Usage: " << Map.program() << " [-h|--help]" << std::endl << 
                  "          [-a|--all] [-r|--regex REGEX] [-t] [--exclude NAME] [--include NAME] FILES..." << std::endl;
     return 0;
