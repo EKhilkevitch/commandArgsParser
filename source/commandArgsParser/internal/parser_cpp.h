@@ -9,7 +9,7 @@
 
 // =========================================================
 
-namespace commandArgumentsParser
+namespace commandArguments
 {
 
   // ---------------------------------------------------------
@@ -56,6 +56,8 @@ namespace commandArgumentsParser
       std::string value( char Short, const std::string &Default = std::string() ) const;
       bool exists( const std::string &Long ) const;
       std::string value( const std::string &Long, const std::string &Default = std::string() ) const;
+      bool exists( const char *Long ) const;
+      std::string value( const char *Long, const std::string &Default = std::string() ) const;
 
       std::vector<std::string> files() const;
       std::string program() const;
@@ -88,9 +90,12 @@ namespace commandArgumentsParser
 
       void addOption( char Short, argument Arguement = NoArgument );
       void addOption( const std::string &Long, argument Arguement = NoArgument );
+      void addOption( const char *Long, argument Arguement = NoArgument );
       void addOption( char Short, const std::string &Long, argument Arguement = NoArgument );
+      void addOption( char Short, const char *Long, argument Arguement = NoArgument );
 
       map parse( char **argv );
+      map operator()( char **argv );
   };
   
   // ---------------------------------------------------------

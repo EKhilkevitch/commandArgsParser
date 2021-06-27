@@ -7,6 +7,8 @@ int main( int argc, char **argv )
 {
   struct commandArgsParser *Parser = NULL;
   struct commandArgsParsedMap *Map = NULL;
+  char **Files;
+  size_t i;
 
   Parser = commandArgsParserCreate();
   if ( Parser == NULL )
@@ -50,11 +52,20 @@ int main( int argc, char **argv )
   }
 
   printf( "program name: '%s'\n", commandArgsParsedMapProgramName(Map) );
-  printf( "  option [-a|--all] is (%s) \n", commandArgsParsedMapShortOptionValue(Map,'h') ? "on" : "off" );
-  printf( "  option [-r|--regex] value is (%s) \n", commandArgsParsedMapShortOptionValue(Map,'r') != NULL ? commandArgsParsedMapShortOptionValue(Map,'r') : "off" );
-  printf( "  option [-t] is (%s) \n", commandArgsParsedMapShortOptionValue(Map,'t') ? "on" : "off" );
-  printf( "  option [-exclude] is (%s) \n", commandArgsParsedMapLongOptionValue(Map,"exclude") != NULL ? commandArgsParsedMapLongOptionValue(Map,"exclude") : "off" );
-  printf( "  option [-include] is (%s) \n", commandArgsParsedMapLongOptionValue(Map,"include") != NULL ? commandArgsParsedMapLongOptionValue(Map,"include") : "off" );
+  printf( "options:\n" );
+  printf( "  [-a|--all] is (%s) \n", commandArgsParsedMapShortOptionValue(Map,'h') ? "on" : "off" );
+  printf( "  [-r|--regex] value is (%s) \n", commandArgsParsedMapShortOptionValue(Map,'r') != NULL ? commandArgsParsedMapShortOptionValue(Map,'r') : "off" );
+  printf( "  [-t] is (%s) \n", commandArgsParsedMapShortOptionValue(Map,'t') ? "on" : "off" );
+  printf( "  [-exclude] is (%s) \n", commandArgsParsedMapLongOptionValue(Map,"exclude") != NULL ? commandArgsParsedMapLongOptionValue(Map,"exclude") : "off" );
+  printf( "  [-include] is (%s) \n", commandArgsParsedMapLongOptionValue(Map,"include") != NULL ? commandArgsParsedMapLongOptionValue(Map,"include") : "off" );
+
+  Files = commandArgsParsedMapFiles(Map);
+  if ( Files != NULL )
+  {
+    printf( "files: \n" );
+    for ( i = 0; Files[i] != NULL; i++ )
+      printf( "  %s\n", Files[i] );
+  }
 
   commandArgsParsedMapDelete(Map);
   commandArgsParserDelete(Parser);

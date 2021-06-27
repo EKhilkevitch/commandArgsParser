@@ -60,14 +60,14 @@ namespace
 
 TEST( parserCpp, parse )
 {
-  commandArgumentsParser::parser Parser;
-  Parser.addOption( 'a', "optA", commandArgumentsParser::parser::HasArgument );
-  Parser.addOption( 'b', commandArgumentsParser::parser::NoArgument );
-  Parser.addOption( "optC", commandArgumentsParser::parser::NoArgument );
-  Parser.addOption( 'd', "optD", commandArgumentsParser::parser::HasArgument );
+  commandArguments::parser Parser;
+  Parser.addOption( 'a', "optA", commandArguments::parser::HasArgument );
+  Parser.addOption( 'b', commandArguments::parser::NoArgument );
+  Parser.addOption( "optC", commandArguments::parser::NoArgument );
+  Parser.addOption( 'd', "optD", commandArguments::parser::HasArgument );
 
   std::unique_ptr< char*[], decltype(&freeArgv) > Argv( createArgv( "program", "file1", "-a", "argA", "-b", "--optC", "file2", "file3", nullptr ), &freeArgv );
-  commandArgumentsParser::map Map = Parser.parse(Argv.get());
+  commandArguments::map Map = Parser.parse(Argv.get());
 
   EXPECT_EQ( "program", Map.program() );
 

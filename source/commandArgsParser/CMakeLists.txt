@@ -22,7 +22,7 @@ if ( WIN32 )
   target_compile_definitions( commandArgsParser PRIVATE "-D_CRT_SECURE_NO_DEPRECATE=1" )
 endif()
 
-add_library( commandArgsParserCpp ${LIBRARY_TYPE} ${source_cpp_files} )
+add_library( commandArgsParserCpp ${LIBRARY_TYPE} ${source_cpp_files} ${source_c_files} )
 target_include_directories( commandArgsParserCpp PRIVATE "${PROJECT_SOURCE_DIR}/.." )
-target_link_libraries( commandArgsParserCpp commandArgsParser )
+#target_link_libraries( commandArgsParserCpp commandArgsParser )
 

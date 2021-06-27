@@ -6,27 +6,27 @@
 
 // =========================================================
 
-commandArgumentsParser::exception::exception( const std::string &W ) :
+commandArguments::exception::exception( const std::string &W ) :
   What(W)
 {
 }
 
 // ---------------------------------------------------------
       
-commandArgumentsParser::exception::~exception() throw()
+commandArguments::exception::~exception() throw()
 {
 }
 
 // ---------------------------------------------------------
 
-const char* commandArgumentsParser::exception::what() const throw()
+const char* commandArguments::exception::what() const throw()
 {
   return What.c_str();
 }
 
 // =========================================================
 
-struct commandArgumentsParser::map::impl
+struct commandArguments::map::impl
 {
   public:
     struct commandArgsParsedMap *Map;
@@ -41,28 +41,28 @@ struct commandArgumentsParser::map::impl
 
 // ---------------------------------------------------------
 
-commandArgumentsParser::map::impl::impl( struct commandArgsParsedMap *M ) :
+commandArguments::map::impl::impl( struct commandArgsParsedMap *M ) :
   Map(M)
 {
 }
 
 // ---------------------------------------------------------
 
-commandArgumentsParser::map::impl::~impl()
+commandArguments::map::impl::~impl()
 {
   commandArgsParsedMapDelete(Map);
 }
 
 // ---------------------------------------------------------
 
-commandArgumentsParser::map::map() :
+commandArguments::map::map() :
   Impl( new impl(NULL) )
 {
 }
 
 // ---------------------------------------------------------
       
-commandArgumentsParser::map::map( const map &Map ) :
+commandArguments::map::map( const map &Map ) :
   Impl( new impl( commandArgsParsedMapCopy(Map.Impl->Map) ) )
 {
   if ( Impl->Map == NULL )
@@ -71,7 +71,7 @@ commandArgumentsParser::map::map( const map &Map ) :
 
 // ---------------------------------------------------------
  
-commandArgumentsParser::map& commandArgumentsParser::map::operator=( const map &Map )
+commandArguments::map& commandArguments::map::operator=( const map &Map )
 {
   map Copy(Map);
   swap( Copy );
@@ -80,14 +80,14 @@ commandArgumentsParser::map& commandArgumentsParser::map::operator=( const map &
 
 // ---------------------------------------------------------
 
-commandArgumentsParser::map::~map()
+commandArguments::map::~map()
 {
   delete Impl;
 }
 
 // ---------------------------------------------------------
 
-void commandArgumentsParser::map::swap( map &Other )
+void commandArguments::map::swap( map &Other )
 {
   impl *Tmp = Impl;
   Impl = Other.Impl;
@@ -96,7 +96,7 @@ void commandArgumentsParser::map::swap( map &Other )
 
 // ---------------------------------------------------------
 
-bool commandArgumentsParser::map::isSuccess() const
+bool commandArguments::map::isSuccess() const
 {
   const int IsSuccess = commandArgsParsedMapIsSuccess(Impl->Map);
   if ( IsSuccess != 0 )
@@ -106,7 +106,7 @@ bool commandArgumentsParser::map::isSuccess() const
 
 // ---------------------------------------------------------
       
-std::string commandArgumentsParser::map::failMessage() const
+std::string commandArguments::map::failMessage() const
 {
   const int IsSuccess = commandArgsParsedMapIsSuccess(Impl->Map);
   if ( IsSuccess != 0 )
@@ -121,7 +121,7 @@ std::string commandArgumentsParser::map::failMessage() const
 
 // ---------------------------------------------------------
       
-std::string commandArgumentsParser::map::value( char Short, const std::string &Default ) const
+std::string commandArguments::map::value( char Short, const std::string &Default ) const
 {
   const char *Value = commandArgsParsedMapShortOptionValue( Impl->Map, Short );
 
@@ -136,7 +136,7 @@ std::string commandArgumentsParser::map::value( char Short, const std::string &D
 
 // ---------------------------------------------------------
 
-std::string commandArgumentsParser::map::value( const std::string &Long, const std::string &Default ) const
+std::string commandArguments::map::value( const std::string &Long, const std::string &Default ) const
 {
   const char *Value = commandArgsParsedMapLongOptionValue( Impl->Map, Long.c_str() );
 
@@ -151,7 +151,22 @@ std::string commandArgumentsParser::map::value( const std::string &Long, const s
 
 // ---------------------------------------------------------
 
-bool commandArgumentsParser::map::exists( char Short ) const
+std::string commandArguments::map::value( const char *Long, const std::string &Default ) const
+{
+  const char *Value = commandArgsParsedMapLongOptionValue( Impl->Map, Long );
+
+  if ( Value == NULL )
+    return Default;
+
+  if ( Value == COMMAND_ARGS_PARSER_MAP_EXISTS )
+    return Default;
+  
+  return Value;
+}
+
+// ---------------------------------------------------------
+
+bool commandArguments::map::exists( char Short ) const
 {
   const char *Value = commandArgsParsedMapShortOptionValue( Impl->Map, Short );
 
@@ -166,9 +181,25 @@ bool commandArgumentsParser::map::exists( char Short ) const
 
 // ---------------------------------------------------------
 
-bool commandArgumentsParser::map::exists( const std::string &Long ) const
+bool commandArguments::map::exists( const std::string &Long ) const
 {
   const char *Value = commandArgsParsedMapLongOptionValue( Impl->Map, Long.c_str() );
+  
+  if ( Value == NULL )
+    return false;
+
+  if ( Value == COMMAND_ARGS_PARSER_MAP_EXISTS )
+    return true;
+
+  return true;
+}
+
+
+// ---------------------------------------------------------
+
+bool commandArguments::map::exists( const char *Long ) const
+{
+  const char *Value = commandArgsParsedMapLongOptionValue( Impl->Map, Long );
   
   if ( Value == NULL )
     return false;
@@ -181,7 +212,7 @@ bool commandArgumentsParser::map::exists( const std::string &Long ) const
 
 // ---------------------------------------------------------
       
-std::vector<std::string> commandArgumentsParser::map::files() const
+std::vector<std::string> commandArguments::map::files() const
 {
   char **Files = commandArgsParsedMapFiles( Impl->Map );
   
@@ -197,7 +228,7 @@ std::vector<std::string> commandArgumentsParser::map::files() const
 
 // ---------------------------------------------------------
       
-std::string commandArgumentsParser::map::program() const
+std::string commandArguments::map::program() const
 {
   const char *Program = commandArgsParsedMapProgramName( Impl->Map );
   if ( Program == NULL )
@@ -207,7 +238,7 @@ std::string commandArgumentsParser::map::program() const
 
 // =========================================================
 
-struct commandArgumentsParser::parser::impl
+struct commandArguments::parser::impl
 {
   public:
     commandArgsParser *Parser;
@@ -222,21 +253,21 @@ struct commandArgumentsParser::parser::impl
 
 // ---------------------------------------------------------
 
-commandArgumentsParser::parser::impl::impl( commandArgsParser *P ) :
+commandArguments::parser::impl::impl( commandArgsParser *P ) :
   Parser( P )
 {
 }
 
 // ---------------------------------------------------------
 
-commandArgumentsParser::parser::impl::~impl()
+commandArguments::parser::impl::~impl()
 {
   commandArgsParserDelete(Parser);
 }
 
 // ---------------------------------------------------------
 
-commandArgumentsParser::parser::parser() :
+commandArguments::parser::parser() :
   Impl( new impl( commandArgsParserCreate() ) )
 {
   if ( Impl->Parser == NULL )
@@ -245,7 +276,7 @@ commandArgumentsParser::parser::parser() :
 
 // ---------------------------------------------------------
       
-commandArgumentsParser::parser::parser( const parser &Parser ) :
+commandArguments::parser::parser( const parser &Parser ) :
   Impl( new impl( commandArgsParserCopy(Parser.Impl->Parser) ) )
 {
   if ( Impl->Parser == NULL )
@@ -254,7 +285,7 @@ commandArgumentsParser::parser::parser( const parser &Parser ) :
 
 // ---------------------------------------------------------
 
-commandArgumentsParser::parser& commandArgumentsParser::parser::operator=( const parser &Parser )
+commandArguments::parser& commandArguments::parser::operator=( const parser &Parser )
 {
   parser Copy(Parser);
   swap(Copy);
@@ -263,14 +294,14 @@ commandArgumentsParser::parser& commandArgumentsParser::parser::operator=( const
 
 // ---------------------------------------------------------
 
-commandArgumentsParser::parser::~parser()
+commandArguments::parser::~parser()
 {
   delete Impl;
 }
 
 // ---------------------------------------------------------
 
-void commandArgumentsParser::parser::swap( parser &Other )
+void commandArguments::parser::swap( parser &Other )
 {
   impl *Tmp = Impl;
   Impl = Other.Impl;
@@ -279,28 +310,42 @@ void commandArgumentsParser::parser::swap( parser &Other )
 
 // ---------------------------------------------------------
 
-void commandArgumentsParser::parser::addOption( char Short, argument Arguement )
+void commandArguments::parser::addOption( char Short, argument Arguement )
 {
   commandArgsParserAddOption( Impl->Parser, Short, COMMAND_ARGS_PARSER_NO_LONG, Arguement == HasArgument ? 1 : 0 );
 }
 
 // ---------------------------------------------------------
       
-void commandArgumentsParser::parser::addOption( const std::string &Long, argument Arguement )
+void commandArguments::parser::addOption( const std::string &Long, argument Arguement )
 {
   commandArgsParserAddOption( Impl->Parser, COMMAND_ARGS_PARSER_NO_SHORT, Long.c_str(), Arguement == HasArgument ? 1 : 0 );
 }
 
 // ---------------------------------------------------------
+      
+void commandArguments::parser::addOption( const char *Long, argument Arguement )
+{
+  commandArgsParserAddOption( Impl->Parser, COMMAND_ARGS_PARSER_NO_SHORT, Long, Arguement == HasArgument ? 1 : 0 );
+}
 
-void commandArgumentsParser::parser::addOption( char Short, const std::string &Long, argument Arguement )
+// ---------------------------------------------------------
+
+void commandArguments::parser::addOption( char Short, const std::string &Long, argument Arguement )
 {
   commandArgsParserAddOption( Impl->Parser, Short, Long.c_str(), Arguement == HasArgument ? 1 : 0 );
 }
 
 // ---------------------------------------------------------
 
-commandArgumentsParser::map commandArgumentsParser::parser::parse( char **argv )
+void commandArguments::parser::addOption( char Short, const char *Long, argument Arguement )
+{
+  commandArgsParserAddOption( Impl->Parser, Short, Long, Arguement == HasArgument ? 1 : 0 );
+}
+
+// ---------------------------------------------------------
+
+commandArguments::map commandArguments::parser::parse( char **argv )
 {
   commandArgsParsedMap *Map = commandArgsParserParse( Impl->Parser, argv );
 
@@ -310,6 +355,13 @@ commandArgumentsParser::map commandArgumentsParser::parser::parse( char **argv )
   map Result;
   Result.Impl->Map = Map;
   return Result;
+}
+
+// ---------------------------------------------------------
+
+commandArguments::map commandArguments::parser::operator()( char **argv )
+{
+  return parse(argv);
 }
 
 // =========================================================

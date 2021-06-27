@@ -13,6 +13,11 @@ if ( ENABLE_EXAMPLES )
   add_executable( examaple_c example_c.c )
   target_link_libraries( examaple_c commandArgsParser )
   target_include_directories( examaple_c PRIVATE "${PROJECT_SOURCE_DIR}/../" )
+  
+  project( examaple_cpp )
+  add_executable( examaple_cpp example_cpp.cpp )
+  target_link_libraries( examaple_cpp commandArgsParserCpp )
+  target_include_directories( examaple_cpp PRIVATE "${PROJECT_SOURCE_DIR}/../" )
 
 else()
   message( "Examples disabed (use -DENABLE_EXAMPLES=1)" )
