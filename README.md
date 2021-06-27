@@ -1,5 +1,5 @@
 # commandArgsParser
-Yet another small command line arguments parser with C and C++ interface.
+Yet another small command line arguments parser with C and C++ interface. You can find examples in source/example directory.
 
 Building
 =====================
