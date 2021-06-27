@@ -46,6 +46,6 @@ char** commandArgsParsedMapFiles( const struct commandArgsParsedMap *Map );
 #endif
 
 #ifdef __cplusplus
-#  include "commandArgsParser/parser_cpp.h"
+#  include "commandArgsParser/internal/parser_cpp.h"
 #endif
 

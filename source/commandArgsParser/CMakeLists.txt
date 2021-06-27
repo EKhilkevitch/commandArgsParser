@@ -12,7 +12,7 @@ set( source_c_files
    )
 
 set( source_cpp_files
-       parser_cpp.cpp
+       internal/parser_cpp.cpp
    )
 
 add_library( commandArgsParser ${LIBRARY_TYPE} ${source_c_files} )
