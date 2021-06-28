@@ -80,6 +80,10 @@ namespace commandArguments
     private:
       impl *Impl;
 
+    private:
+      static char** createArgvFromVector( const std::vector<std::string> &Args );
+      static void deleteArgvFromVector( char **argv );
+
     public:
       parser();
       parser( const parser &Parser );
@@ -95,7 +99,10 @@ namespace commandArguments
       void addOption( char Short, const char *Long, argument Arguement = NoArgument );
 
       map parse( char **argv );
+      map parse( const std::vector<std::string> &Args );
+
       map operator()( char **argv );
+      map operator()( const std::vector<std::string> &Args );
   };
   
   // ---------------------------------------------------------

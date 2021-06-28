@@ -4,6 +4,8 @@
 #include "commandArgsParser/internal/parser_cpp.h"
 #include "commandArgsParser/parser.h"
 
+#include <cstring>
+
 // =========================================================
 
 commandArguments::exception::exception( const std::string &W ) :
@@ -359,9 +361,76 @@ commandArguments::map commandArguments::parser::parse( char **argv )
 
 // ---------------------------------------------------------
 
+commandArguments::map commandArguments::parser::parse( const std::vector<std::string> &Args )
+{
+  char **argv = NULL;
+  map Map;
+
+  try
+  {
+    argv = createArgvFromVector(Args);
+    Map = parse(argv);
+  } catch ( ... ) {
+    deleteArgvFromVector(argv);
+    throw;
+  }
+    
+  deleteArgvFromVector(argv);
+  return Map;
+}
+
+// ---------------------------------------------------------
+
 commandArguments::map commandArguments::parser::operator()( char **argv )
 {
   return parse(argv);
+}
+
+
+// ---------------------------------------------------------
+
+commandArguments::map commandArguments::parser::operator()( const std::vector<std::string> &Args )
+{
+  return parse(Args);
+}
+
+// ---------------------------------------------------------
+      
+char** commandArguments::parser::createArgvFromVector( const std::vector<std::string> &Args )
+{
+  char **argv = NULL;
+
+  try
+  {
+    argv = new char*[ Args.size() + 1 ];
+
+    for ( size_t i = 0; i < Args.size()+1; i++ )
+      argv[i] = NULL;
+
+    for ( size_t i = 0; i < Args.size(); i++ )
+    {
+      argv[i] = new char[ Args[i].length() + 1 ];
+      std::strcpy( argv[i], Args[i].c_str() );
+    }
+
+    return argv;
+
+  } catch ( ... ) {
+    deleteArgvFromVector(argv);
+    throw;
+  }
+}
+
+// ---------------------------------------------------------
+
+void commandArguments::parser::deleteArgvFromVector( char **argv )
+{
+  if ( argv == NULL )
+    return;
+
+  for ( size_t i = 0; argv[i] != NULL; i++ )
+    delete [] argv[i];
+  delete [] argv;
 }
 
 // =========================================================
