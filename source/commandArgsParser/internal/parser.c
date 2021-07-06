@@ -104,7 +104,7 @@ int CAPINT_parseNextArgumentOptionTypeArg( struct commandArgsParsedMap *Map, cha
 int CAPINT_parseNextArgumentOptionTypeEnd( struct commandArgsParsedMap *Map, char **argv )
 {
   size_t i;
-  size_t TotalShift;
+  int TotalShift;
 
   if ( Map == NULL )
     return 0;
