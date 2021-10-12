@@ -92,11 +92,11 @@ namespace commandArguments
 
       void swap( parser &Other );
 
-      void addOption( char Short, argument Arguement = NoArgument );
-      void addOption( const std::string &Long, argument Arguement = NoArgument );
-      void addOption( const char *Long, argument Arguement = NoArgument );
-      void addOption( char Short, const std::string &Long, argument Arguement = NoArgument );
-      void addOption( char Short, const char *Long, argument Arguement = NoArgument );
+      parser& addOption( char Short, argument Arguement = NoArgument );
+      parser& addOption( const std::string &Long, argument Arguement = NoArgument );
+      parser& addOption( const char *Long, argument Arguement = NoArgument );
+      parser& addOption( char Short, const std::string &Long, argument Arguement = NoArgument );
+      parser& addOption( char Short, const char *Long, argument Arguement = NoArgument );
 
       map parse( char **argv );
       map parse( const std::vector<std::string> &Args );

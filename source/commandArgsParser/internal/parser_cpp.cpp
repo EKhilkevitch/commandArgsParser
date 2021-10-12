@@ -312,37 +312,42 @@ void commandArguments::parser::swap( parser &Other )
 
 // ---------------------------------------------------------
 
-void commandArguments::parser::addOption( char Short, argument Arguement )
+commandArguments::parser& commandArguments::parser::addOption( char Short, argument Arguement )
 {
   commandArgsParserAddOption( Impl->Parser, Short, COMMAND_ARGS_PARSER_NO_LONG, Arguement == HasArgument ? 1 : 0 );
+  return *this;
 }
 
 // ---------------------------------------------------------
       
-void commandArguments::parser::addOption( const std::string &Long, argument Arguement )
+commandArguments::parser& commandArguments::parser::addOption( const std::string &Long, argument Arguement )
 {
   commandArgsParserAddOption( Impl->Parser, COMMAND_ARGS_PARSER_NO_SHORT, Long.c_str(), Arguement == HasArgument ? 1 : 0 );
+  return *this;
 }
 
 // ---------------------------------------------------------
       
-void commandArguments::parser::addOption( const char *Long, argument Arguement )
+commandArguments::parser& commandArguments::parser::addOption( const char *Long, argument Arguement )
 {
   commandArgsParserAddOption( Impl->Parser, COMMAND_ARGS_PARSER_NO_SHORT, Long, Arguement == HasArgument ? 1 : 0 );
+  return *this;
 }
 
 // ---------------------------------------------------------
 
-void commandArguments::parser::addOption( char Short, const std::string &Long, argument Arguement )
+commandArguments::parser& commandArguments::parser::addOption( char Short, const std::string &Long, argument Arguement )
 {
   commandArgsParserAddOption( Impl->Parser, Short, Long.c_str(), Arguement == HasArgument ? 1 : 0 );
+  return *this;
 }
 
 // ---------------------------------------------------------
 
-void commandArguments::parser::addOption( char Short, const char *Long, argument Arguement )
+commandArguments::parser& commandArguments::parser::addOption( char Short, const char *Long, argument Arguement )
 {
   commandArgsParserAddOption( Impl->Parser, Short, Long, Arguement == HasArgument ? 1 : 0 );
+  return *this;
 }
 
 // ---------------------------------------------------------
