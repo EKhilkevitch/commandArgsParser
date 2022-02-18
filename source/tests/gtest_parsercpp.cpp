@@ -98,6 +98,77 @@ TEST( parserCpp, parse )
   EXPECT_EQ( "file3", Files.at(2) );
 }
 
-// =========================================================
+// ---------------------------------------------------------
 
+TEST( parserCpp, parse_std_1 )
+{
+  commandArguments::parser Parser;
+  Parser.addOption( 'a', "optA", commandArguments::parser::HasArgument );
+  Parser.addOption( 'b', commandArguments::parser::NoArgument );
+  Parser.addOption( "optC", commandArguments::parser::NoArgument );
+  Parser.addOption( 'd', "optD", commandArguments::parser::HasArgument );
+  
+  std::vector< std::string > StdArguments;
+  StdArguments.push_back( "program" );
+  StdArguments.push_back( "file1" );
+  StdArguments.push_back( "-a" );
+  StdArguments.push_back( "argA" );
+  StdArguments.push_back( "-b" );
+  StdArguments.push_back( "--optC" );
+  StdArguments.push_back( "file2" );
+  StdArguments.push_back( "file3" );
+
+  commandArguments::map Map = Parser.parse(StdArguments);
+
+  EXPECT_EQ( "program", Map.program() );
+
+  EXPECT_TRUE( Map.exists('a') );
+  EXPECT_TRUE( Map.exists("optA") );
+  EXPECT_EQ( "argA", Map.value('a') );
+  EXPECT_EQ( "argA", Map.value("optA") );
+  EXPECT_EQ( "argA", Map.value("optA","Default") );
+
+  EXPECT_TRUE( Map.exists('b') );
+  EXPECT_EQ( "", Map.value('b') );
+  EXPECT_EQ( "Default", Map.value('b',"Default") );
+  
+  EXPECT_TRUE( Map.exists("optC") );
+  EXPECT_EQ( "Default", Map.value("optC","Default") );
+  
+  EXPECT_FALSE( Map.exists('d') );
+  EXPECT_FALSE( Map.exists("optD") );
+  EXPECT_EQ( "Default", Map.value("optD","Default") );
+  
+  EXPECT_FALSE( Map.exists('e') );
+  EXPECT_FALSE( Map.exists("optE") );
+
+  const auto Files = Map.files();
+  ASSERT_EQ( 3, Files.size() );
+  EXPECT_EQ( "file1", Files.at(0) );
+  EXPECT_EQ( "file2", Files.at(1) );
+  EXPECT_EQ( "file3", Files.at(2) );
+}
+
+// ---------------------------------------------------------
+
+TEST( parserCpp, parse_std_2 )
+{
+  commandArguments::parser Parser;
+  Parser.addOption( 'h', "help", commandArguments::parser::NoArgument );
+  Parser.addOption( 'a', "acquisition", commandArguments::parser::NoArgument );
+  Parser.addOption( 'c', "console", commandArguments::parser::NoArgument );
+  
+  std::vector< std::string > StdArguments;
+  StdArguments.push_back( "program" );
+  StdArguments.push_back( "ls" );
+
+  commandArguments::map Map = Parser.parse(StdArguments);
+
+  EXPECT_EQ( "program", Map.program() );
+  const auto Files = Map.files();
+  ASSERT_EQ( 1, Files.size() );
+  EXPECT_EQ( "ls", Files.at(0) );
+}
+
+// =========================================================
 
