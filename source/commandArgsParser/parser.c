@@ -177,7 +177,7 @@ struct commandArgsParsedMap* commandArgsParsedMapCopy( const struct commandArgsP
 {
   struct commandArgsParsedMap *Copy;
   
-  struct option *CurrentOption = NULL, *CopyOption = NULL, **EndOfCopuOptionList = NULL;
+  struct option *CurrentOption = NULL, *CopyOption = NULL, **EndOfCopyOptionList = NULL;
   struct fileitem *CurrentFile = NULL, *CopyFile = NULL, **EndOfCopyFileList = NULL;
 
   if ( Map == NULL )
@@ -191,15 +191,15 @@ struct commandArgsParsedMap* commandArgsParsedMapCopy( const struct commandArgsP
   Copy->ErrorString = CAPINT_strdup( Map->ErrorString );
 
   CurrentOption = Map->OptionsList;
-  EndOfCopuOptionList = &Copy->OptionsList;
+  EndOfCopyOptionList = &Copy->OptionsList;
   while ( CurrentOption != NULL )
   {
     CopyOption = CAPINT_copyOption(CurrentOption);
     if ( CopyOption == NULL )
       break;
 
-    *EndOfCopuOptionList = CopyOption;
-    EndOfCopuOptionList = &CopyOption->Next;
+    *EndOfCopyOptionList = CopyOption;
+    EndOfCopyOptionList = &CopyOption->Next;
 
     CurrentOption = CurrentOption->Next;
   }
@@ -217,7 +217,6 @@ struct commandArgsParsedMap* commandArgsParsedMapCopy( const struct commandArgsP
 
     CurrentFile = CurrentFile->Next;
   }
-
 
   CAPINT_updateMapFileVectorFromList( Copy );
   return Copy;
